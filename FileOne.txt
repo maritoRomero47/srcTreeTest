@@ -1,0 +1,82 @@
+//
+// Copyright (c) 2014 - 2015 American Airlines Corp. All rights reserved.
+// This software is the confidential and proprietary product of
+// American Airlines Corp. Any unauthorized use, reproduction, or transfer of this
+// software is strictly prohibited.
+//
+package com.merch.ws.client.cs.seatassignment.common;
+
+import org.apache.cxf.jaxws.*;
+
+import com.merch.ws.client.common.exception.*;
+import com.merch.ws.client.common.util.*;
+import com.merch.ws.client.cs.*;
+import com.merch.ws.provider.cs.seatassignment.*;
+
+/**
+ * <dl>
+ * <dt><b>Class Description: </b></dt>
+ * <dd>Base Service locator.</dd>
+ * 
+ * </dl>
+ */
+public abstract class CSSeatAssignmentBaseServiceLocator<T extends WSRequest, U extends WSResponse> extends
+      CommonServicesBaseServiceLocator<T, U>
+{
+   protected RequestHeaderType _wsheader = null;
+   protected BookingEngineInfoType _wsbooking = null;
+
+   public CSSeatAssignmentBaseServiceLocator(T request)
+   {
+      super(request);
+   }
+   
+   @Override
+   protected void setConfigurationData() throws WSException
+   {
+      _wsheader = new RequestHeaderType();
+      _wsbooking = new BookingEngineInfoType();
+
+      _wsheader.setClientID(_wsConfig.getClientID());
+      _wsheader.setTransactionID(_wsRequest.getTransactionId());
+
+      _wsheader.setWsdlVersion(_wsConfig.getWsdlVersion());
+      _wsheader.setServiceType(_wsConfig.getServiceType());
+      _wsheader.setImplVersion(_wsConfig.getImplVersion());
+
+
+      _wsbooking.setHostPartition(_wsConfig.getHostPartition());
+      _wsbooking.setHostSystemCommands(true);
+      
+      setWSHeaders();
+   }
+
+   protected abstract void setWSHeaders();
+
+   /**
+    * @throws WSException
+    */
+   protected abstract void customWSConfig() throws WSException;
+   
+   @Override
+   protected void loadWsConfig() throws WSException
+   {
+      customWSConfig();
+   }
+
+   /**
+    * Set SSL Data.
+    */
+   protected void setSSLData() throws WSException
+   {
+      // NON IMPLEMENTED.
+   }
+
+   /* (non-Javadoc)
+    * @see com.aacorn.ws.client.common.AbstractServiceLocator#additionalSOAPInterceptors(org.apache.cxf.jaxws.JaxWsProxyFactoryBean)
+    */
+   @Override
+   protected void additionalSOAPInterceptors(JaxWsProxyFactoryBean factory)
+   {
+   }
+}
